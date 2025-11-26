@@ -8,16 +8,8 @@ export const adminRoutes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'about',
         pathMatch: 'full'
-      },
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent)
-      },
-      {
-        path: 'profile',
-        loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
       },
       {
         path: 'about',
@@ -50,14 +42,6 @@ export const adminRoutes: Routes = [
       {
         path: 'contact-form',
         loadComponent: () => import('./contact-form/contact-form.component').then(m => m.ContactFormComponent)
-      },
-      {
-        path: 'testimonials',
-        loadComponent: () => import('./testimonials/testimonials.component').then(m => m.TestimonialsComponent)
-      },
-      {
-        path: 'placements',
-        loadComponent: () => import('./placements/placements.component').then(m => m.PlacementsComponent)
       }
     ]
   }
