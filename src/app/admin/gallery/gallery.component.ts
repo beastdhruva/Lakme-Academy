@@ -12,29 +12,26 @@ import { FormsModule } from '@angular/forms';
       <h1>Gallery Management</h1>
       
       <div class="form-card">
-        <h2>Add New Image</h2>
+        <h2>Upload New Image</h2>
         <form (ngSubmit)="addImage()">
           <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" [(ngModel)]="newImage.url" name="url" class="form-control">
+            <label>Upload Image</label>
+            <input 
+              type="file" 
+              (change)="onImageSelected($event)" 
+              accept="image/*"
+              class="form-control"
+              #imageInput>
+            <small>Select an image file (JPG, PNG, GIF, etc.)</small>
+            @if (selectedImagePreview) {
+              <div class="image-preview">
+                <img [src]="selectedImagePreview" alt="Preview">
+                <button type="button" class="btn-remove" (click)="removeImage(imageInput)">Remove</button>
+              </div>
+            }
           </div>
           
-          <div class="form-group">
-            <label>Image Title</label>
-            <input type="text" [(ngModel)]="newImage.title" name="title" class="form-control">
-          </div>
-          
-          <div class="form-group">
-            <label>Category</label>
-            <select [(ngModel)]="newImage.category" name="category" class="form-control">
-              <option value="makeup">Makeup</option>
-              <option value="hair">Hair Styling</option>
-              <option value="events">Events</option>
-              <option value="students">Students</option>
-            </select>
-          </div>
-          
-          <button type="submit" class="btn-primary">Add Image</button>
+          <button type="submit" class="btn-primary" [disabled]="!selectedImagePreview">Upload Image</button>
         </form>
       </div>
 
@@ -43,9 +40,8 @@ import { FormsModule } from '@angular/forms';
         <div class="gallery-grid">
           @for (image of galleryImages; track image.id) {
             <div class="gallery-item">
-              <img [src]="image.url" [alt]="image.title">
+              <img [src]="image.url" alt="Gallery Image">
               <div class="gallery-overlay">
-                <p>{{ image.title }}</p>
                 <button class="btn-delete" (click)="deleteImage(image.id)">Delete</button>
               </div>
             </div>
@@ -102,6 +98,38 @@ import { FormsModule } from '@angular/forms';
       border-color: #d4af6a;
     }
 
+    small {
+      display: block;
+      margin-top: 5px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .image-preview {
+      margin-top: 15px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .image-preview img {
+      max-width: 300px;
+      max-height: 300px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+    }
+
+    .btn-remove {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: block;
+    }
+
     .btn-primary {
       background: linear-gradient(135deg, #d4af6a 0%, #c9a85c 100%);
       color: #fff;
@@ -111,6 +139,12 @@ import { FormsModule } from '@angular/forms';
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .gallery-grid {
@@ -141,20 +175,16 @@ import { FormsModule } from '@angular/forms';
       padding: 12px;
       transform: translateY(100%);
       transition: transform 0.3s;
+      display: flex;
+      justify-content: center;
     }
 
     .gallery-item:hover .gallery-overlay {
       transform: translateY(0);
     }
 
-    .gallery-overlay p {
-      color: #fff;
-      margin: 0 0 8px 0;
-      font-size: 0.9rem;
-    }
-
     .btn-delete {
-      padding: 6px 12px;
+      padding: 8px 16px;
       background: #f44336;
       color: #fff;
       border: none;
@@ -165,30 +195,56 @@ import { FormsModule } from '@angular/forms';
   `]
 })
 export class GalleryComponent {
-  newImage = {
-    url: '',
-    title: '',
-    category: 'makeup'
-  };
+  selectedImagePreview: string | null = null;
+  selectedImageData: string | null = null;
 
   galleryImages = [
-    { id: 1, url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400', title: 'Makeup Work', category: 'makeup' },
-    { id: 2, url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', title: 'Hair Styling', category: 'hair' }
+    { id: 1, url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400' },
+    { id: 2, url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400' }
   ];
 
+  onImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedImagePreview = e.target?.result as string;
+        this.selectedImageData = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(input: HTMLInputElement) {
+    this.selectedImagePreview = null;
+    this.selectedImageData = null;
+    input.value = '';
+  }
+
   addImage() {
-    console.log('Adding image:', this.newImage);
-    alert('Image added successfully!');
-    this.newImage = {
-      url: '',
-      title: '',
-      category: 'makeup'
-    };
+    if (this.selectedImageData) {
+      const newId = this.galleryImages.length > 0
+        ? Math.max(...this.galleryImages.map(img => img.id)) + 1
+        : 1;
+
+      this.galleryImages.push({
+        id: newId,
+        url: this.selectedImageData
+      });
+
+      console.log('Image uploaded successfully');
+      alert('Image uploaded successfully!');
+
+      this.selectedImagePreview = null;
+      this.selectedImageData = null;
+    }
   }
 
   deleteImage(id: number) {
     if (confirm('Are you sure you want to delete this image?')) {
       this.galleryImages = this.galleryImages.filter(img => img.id !== id);
+      console.log('Image deleted:', id);
     }
   }
 }

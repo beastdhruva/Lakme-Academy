@@ -13,7 +13,21 @@ import { RouterModule, Router } from '@angular/router';
         <div class="admin-header">
           <h2>Admin Panel</h2>
         </div>
+  
         <nav class="admin-nav">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+          <a routerLink="/admin/placements" routerLinkActive="active" class="nav-item">
+            <span class="icon">💼</span>
+            <span>Placements</span>
+          </a>
+          <a routerLink="/admin/testimonials" routerLinkActive="active" class="nav-item">
+            <span class="icon">🎤</span>
+            <span>Testimonials</span>
+          </a>
+
           <a routerLink="/admin/about" routerLinkActive="active" class="nav-item">
             <span class="icon">ℹ️</span>
             <span>About Section</span>
@@ -47,6 +61,7 @@ import { RouterModule, Router } from '@angular/router';
             <span>Contact Form</span>
           </a>
         </nav>
+
         <button class="back-btn" (click)="goToHome()">← Back to Website</button>
       </aside>
       <main class="admin-content">
@@ -133,7 +148,7 @@ import { RouterModule, Router } from '@angular/router';
   `]
 })
 export class AdminLayoutComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   goToHome() {
     this.router.navigate(['/']);

@@ -1,5 +1,8 @@
 
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { PlacementsComponent } from './placements/placements.component';
+import { TestimonialsComponent } from './testimonials/testimonials.component';
 
 export const adminRoutes: Routes = [
   {
@@ -42,7 +45,10 @@ export const adminRoutes: Routes = [
       {
         path: 'contact-form',
         loadComponent: () => import('./contact-form/contact-form.component').then(m => m.ContactFormComponent)
-      }
+      },
+      { path: 'admin/dashboard', component: DashboardComponent },
+{ path: 'admin/placements', component: PlacementsComponent },
+{ path: 'admin/testimonials', component: TestimonialsComponent },
     ]
   }
 ];
