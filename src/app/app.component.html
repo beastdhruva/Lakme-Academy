@@ -290,53 +290,87 @@
   </div>
 </section>
 
-<section class="workshops">
+<section id="workshops" class="workshops">
   <div class="container">
     <h2 class="section-title workshops-title">Workshops at Lakme Academy</h2>
-    <div class="workshops-content">
-      <div class="workshop-image">
-        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=400&fit=crop" alt="Makeup Workshop">
+    <p class="section-subtitle">Join our exclusive workshops conducted by industry experts and celebrity makeup artists. Learn the latest trends, techniques, and innovations in the beauty industry.</p>
+    <div class="workshops-slider-wrapper">
+      <button class="workshops-nav-btn prev" (click)="scrollWorkshops('prev')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="workshops-slider" #workshopsSlider
+           (mousedown)="onWorkshopsMouseDown($event)"
+           (mousemove)="onWorkshopsMouseMove($event)"
+           (mouseup)="onWorkshopsMouseUp()"
+           (mouseleave)="onWorkshopsMouseLeave()">
+        <div class="workshops-track">
+          @for (workshop of workshops; track workshop.title) {
+            <div class="workshop-slide">
+              <div class="workshop-slide-image">
+                <img [src]="workshop.image" [alt]="workshop.title">
+              </div>
+              <div class="workshop-slide-content">
+                <h3>{{ workshop.title }}</h3>
+                <p>{{ workshop.description }}</p>
+                <ul class="workshop-features">
+                  @for (feature of workshop.features; track feature) {
+                    <li>{{ feature }}</li>
+                  }
+                </ul>
+                <button class="btn-primary">Register Now</button>
+              </div>
+            </div>
+          }
+        </div>
       </div>
-      <div class="workshop-text">
-        <h3>Future of Makeup</h3>
-        <p>Join our exclusive workshops conducted by industry experts and celebrity makeup artists. Learn the latest trends, techniques, and innovations in the beauty industry.</p>
-        <ul>
-          <li>Celebrity makeup masterclass</li>
-          <li>Bridal makeup workshops</li>
-          <li>Fashion week preparation</li>
-          <li>Special effects makeup</li>
-        </ul>
-        <button class="btn-primary">Register Now</button>
-      </div>
+      <button class="workshops-nav-btn next" (click)="scrollWorkshops('next')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
 
 <section class="awards">
   <div class="container">
-    <h2 class="section-title">Awards</h2>
-    <div class="awards-content">
-      <div class="award-card">
-        <div class="award-badge">
-          <span>2019</span>
+    <div class="awards-header">
+      <h2 class="section-title">Awards</h2>
+      <p class="section-subtitle">Celebrating excellence and achievement—discover the awards that recognize our students' talent and dedication.</p>
+    </div>
+    
+    <div class="awards-slider-wrapper">
+      <button class="awards-nav-btn prev" (click)="scrollAwards('prev')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="awards-slider" #awardsSlider
+           (mousedown)="onAwardsMouseDown($event)"
+           (mousemove)="onAwardsMouseMove($event)"
+           (mouseup)="onAwardsMouseUp()"
+           (mouseleave)="onAwardsMouseLeave()">
+        <div class="awards-track">
+          @for (award of awards; track award.title) {
+            <div class="award-slide">
+              <div class="award-slide-image">
+                <img [src]="award.image" [alt]="award.title">
+              </div>
+              <div class="award-slide-content">
+                <h3>{{ award.title }}</h3>
+                <p>{{ award.description }}</p>
+              </div>
+            </div>
+          }
         </div>
-        <h3>National Education Award</h3>
-        <p>Recognized for Excellence in Beauty Education</p>
       </div>
-      <div class="award-card featured">
-        <div class="award-badge">
-          <img src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=150&h=150&fit=crop" alt="Award Trophy">
-        </div>
-        <h3>Best Education Excellence Award 2019</h3>
-        <p>Ranked among Top Beauty Schools in India</p>
-      </div>
-      <div class="award-card">
-        <div class="award-badge">
-          <span>2020</span>
-        </div>
-        <h3>Industry Partnership Award</h3>
-        <p>For Outstanding Industry Collaboration</p>
-      </div>
+      <button class="awards-nav-btn next" (click)="scrollAwards('next')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
@@ -344,18 +378,66 @@
 <section id="testimonials" class="testimonials">
   <div class="container">
     <h2 class="section-title">Student Testimonials</h2>
-    <div class="testimonials-grid">
-      @for (testimonial of testimonials; track testimonial.name) {
-        <div class="testimonial-card">
-          <div class="testimonial-image">
-            <img [src]="testimonial.image" [alt]="testimonial.name">
-          </div>
-          <div class="testimonial-content">
-            <p class="testimonial-text">"{{ testimonial.text }}"</p>
-            <h4 class="testimonial-name">{{ testimonial.name }}</h4>
-          </div>
+    <div class="testimonials-slider-wrapper">
+      <button class="testimonials-nav-btn prev" (click)="scrollTestimonials('prev')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="testimonials-slider" #testimonialsSlider
+           (mousedown)="onTestimonialsMouseDown($event)"
+           (mousemove)="onTestimonialsMouseMove($event)"
+           (mouseup)="onTestimonialsMouseUp()"
+           (mouseleave)="onTestimonialsMouseLeave()">
+        <div class="testimonials-track">
+          @for (testimonial of videoTestimonials; track testimonial.title) {
+            <div class="testimonial-video-card" (click)="playVideo(testimonial.videoUrl)">
+              <div class="video-thumbnail">
+                <img [src]="testimonial.thumbnail" [alt]="testimonial.title">
+                <div class="play-overlay">
+                  <div class="play-button">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                      <circle cx="30" cy="30" r="30" fill="rgba(255, 0, 0, 0.9)"/>
+                      <path d="M23 18 L23 42 L40 30 Z" fill="white"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="video-channel">
+                  <span class="channel-logo">⚡</span>
+                  <span class="channel-name">{{ testimonial.channel }}</span>
+                  <button class="subscribe-btn" (click)="$event.stopPropagation()">Subscribe</button>
+                </div>
+              </div>
+              <div class="video-info">
+                <h3>{{ testimonial.title }}</h3>
+                <div class="video-actions">
+                  <button class="action-btn" (click)="playVideo(testimonial.videoUrl); $event.stopPropagation()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Play
+                  </button>
+                  <button class="action-btn" (click)="shareVideo(testimonial); $event.stopPropagation()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
         </div>
-      }
+      </div>
+      <button class="testimonials-nav-btn next" (click)="scrollTestimonials('next')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
@@ -363,18 +445,16 @@
 <section class="placements">
   <div class="container">
     <h2 class="section-title">Job Placements</h2>
-    <p class="section-subtitle">Our students are working with top brands and studios</p>
+    <p class="placements-description">
+      Lakmé Academy provides job placement assistance* to the students after successful completion of their career courses. With a noticeable rise in demand for beauticians and stylists., the career scope for trained professionals has widened immensely. Lakmé Academy has a dedicated placement cell that helps students land a job.
+    </p>
     <div class="placements-grid">
       @for (placement of placements; track placement.name) {
         <div class="placement-card">
           <div class="placement-image">
             <img [src]="placement.image" [alt]="placement.name">
           </div>
-          <div class="placement-info">
-            <h4>{{ placement.name }}</h4>
-            <p class="role">{{ placement.role }}</p>
-            <p class="company">{{ placement.company }}</p>
-          </div>
+          <div class="placement-name">{{ placement.name }}</div>
         </div>
       }
     </div>
