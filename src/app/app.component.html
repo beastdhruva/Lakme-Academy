@@ -1,3 +1,6 @@
+<router-outlet></router-outlet>
+
+<ng-container *ngIf="!isAdminRoute()">
 <header class="header">
   <div class="header-content">
     <div class="logo">
@@ -25,7 +28,9 @@
     </button>
   </div>
 </header>
+</ng-container>
 
+<ng-container *ngIf="!isAdminRoute()">
 <section class="video-section">
   <div class="video-container">
     <div class="video-wrapper" #videoWrapper>
@@ -542,3 +547,4 @@
     </div>
   </div>
 </footer>
+</ng-container>

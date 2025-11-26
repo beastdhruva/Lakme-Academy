@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   title = 'Lakme Academy Mumbai - Vashi';
   mobileMenuOpen = false;
   currentAboutSlide = 0;
@@ -37,6 +37,12 @@ export class AppComponent {
   private isDraggingTestimonials = false;
   private startXTestimonials = 0;
   private scrollLeftTestimonials = 0;
+
+  constructor(private router: Router) {}
+
+  ngAfterViewInit() {
+    // Lifecycle hook implementation
+  }
 
   toggleMobileMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -154,7 +160,7 @@ export class AppComponent {
   scrollGallery(direction: 'prev' | 'next') {
     const slider = this.gallerySlider.nativeElement;
     const scrollAmount = slider.offsetWidth * 0.7;
-    
+
     if (direction === 'next') {
       slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     } else {
@@ -226,7 +232,7 @@ export class AppComponent {
   scrollEvents(direction: 'prev' | 'next') {
     const slider = this.eventsSlider.nativeElement;
     const scrollAmount = slider.offsetWidth * 0.7;
-    
+
     if (direction === 'next') {
       slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     } else {
@@ -297,7 +303,7 @@ export class AppComponent {
   scrollWorkshops(direction: 'prev' | 'next') {
     const slider = this.workshopsSlider.nativeElement;
     const scrollAmount = slider.offsetWidth * 0.7;
-    
+
     if (direction === 'next') {
       slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     } else {
@@ -377,7 +383,7 @@ export class AppComponent {
   scrollAwards(direction: 'prev' | 'next') {
     const slider = this.awardsSlider.nativeElement;
     const scrollAmount = slider.offsetWidth;
-    
+
     if (direction === 'next') {
       slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     } else {
@@ -412,7 +418,7 @@ export class AppComponent {
   scrollTestimonials(direction: 'prev' | 'next') {
     const slider = this.testimonialsSlider.nativeElement;
     const scrollAmount = slider.offsetWidth * 0.7;
-    
+
     if (direction === 'next') {
       slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     } else {
@@ -471,5 +477,10 @@ export class AppComponent {
         alert('Share link: ' + shareText);
       });
     }
+  }
+
+  // Helper method to check if the current route is an admin route
+  isAdminRoute(): boolean {
+    return this.router.url.startsWith('/admin');
   }
 }
