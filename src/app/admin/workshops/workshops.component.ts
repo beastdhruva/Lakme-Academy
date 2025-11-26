@@ -1,7 +1,15 @@
 
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+interface Workshop {
+  id: number;
+  title: string;
+  instructor: string;
+  description: string;
+  image: string;
+}
 
 @Component({
   selector: 'app-workshops',
@@ -12,43 +20,75 @@ import { FormsModule } from '@angular/forms';
       <h1>Workshops Management</h1>
       
       <div class="form-card">
-        <h2>Add New Workshop</h2>
-        <form (ngSubmit)="addWorkshop()">
+        <h2>{{ editMode ? 'Edit Workshop' : 'Add New Workshop' }}</h2>
+        <form (ngSubmit)="saveWorkshop()">
           <div class="form-group">
             <label>Workshop Title</label>
-            <input type="text" [(ngModel)]="newWorkshop.title" name="title" class="form-control">
+            <input 
+              type="text" 
+              [(ngModel)]="currentWorkshop.title" 
+              name="title" 
+              class="form-control"
+              placeholder="Enter workshop title">
           </div>
           
-          <div class="form-row">
-            <div class="form-group">
-              <label>Instructor</label>
-              <input type="text" [(ngModel)]="newWorkshop.instructor" name="instructor" class="form-control">
-            </div>
-            
-            <div class="form-group">
-              <label>Duration</label>
-              <input type="text" [(ngModel)]="newWorkshop.duration" name="duration" class="form-control" placeholder="e.g., 2 days">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" [(ngModel)]="newWorkshop.date" name="date" class="form-control">
-            </div>
-            
-            <div class="form-group">
-              <label>Fee</label>
-              <input type="text" [(ngModel)]="newWorkshop.fee" name="fee" class="form-control">
-            </div>
+          <div class="form-group">
+            <label>Instructor</label>
+            <input 
+              type="text" 
+              [(ngModel)]="currentWorkshop.instructor" 
+              name="instructor" 
+              class="form-control"
+              placeholder="Enter instructor name">
           </div>
           
           <div class="form-group">
             <label>Description</label>
-            <textarea [(ngModel)]="newWorkshop.description" name="description" rows="4" class="form-control"></textarea>
+            <div class="editor-toolbar">
+              <button type="button" class="editor-btn" (click)="formatText('bold')" title="Bold">
+                <strong>B</strong>
+              </button>
+              <button type="button" class="editor-btn" (click)="formatText('italic')" title="Italic">
+                <em>I</em>
+              </button>
+              <button type="button" class="editor-btn" (click)="formatText('underline')" title="Underline">
+                <u>U</u>
+              </button>
+              <button type="button" class="editor-btn" (click)="formatText('insertUnorderedList')" title="Bullet List">
+                ☰
+              </button>
+            </div>
+            <div 
+              #descriptionEditor
+              class="text-editor" 
+              contenteditable="true"
+              (input)="onEditorInput($event)"
+              [innerHTML]="currentWorkshop.description">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Workshop Image</label>
+            <input 
+              type="file" 
+              (change)="onImageSelected($event)" 
+              accept="image/*"
+              class="form-control">
+            @if (selectedImagePreview) {
+              <div class="image-preview">
+                <img [src]="selectedImagePreview" alt="Preview">
+              </div>
+            }
           </div>
           
-          <button type="submit" class="btn-primary">Add Workshop</button>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">
+              {{ editMode ? 'Update Workshop' : 'Add Workshop' }}
+            </button>
+            @if (editMode) {
+              <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+            }
+          </div>
         </form>
       </div>
 
@@ -57,13 +97,16 @@ import { FormsModule } from '@angular/forms';
         <div class="workshops-list">
           @for (workshop of workshops; track workshop.id) {
             <div class="workshop-item">
+              <div class="workshop-image">
+                <img [src]="workshop.image" [alt]="workshop.title">
+              </div>
               <div class="workshop-info">
                 <h3>{{ workshop.title }}</h3>
-                <p class="workshop-meta">👨‍🏫 {{ workshop.instructor }} | ⏱️ {{ workshop.duration }} | 💰 {{ workshop.fee }}</p>
-                <p class="workshop-date">📅 {{ workshop.date }}</p>
+                <p class="workshop-instructor">👨‍🏫 {{ workshop.instructor }}</p>
+                <div class="workshop-description" [innerHTML]="workshop.description"></div>
               </div>
               <div class="workshop-actions">
-                <button class="btn-edit">Edit</button>
+                <button class="btn-edit" (click)="editWorkshop(workshop)">Edit</button>
                 <button class="btn-delete" (click)="deleteWorkshop(workshop.id)">Delete</button>
               </div>
             </div>
@@ -95,12 +138,6 @@ import { FormsModule } from '@angular/forms';
       margin-bottom: 24px;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
     .form-group {
       margin-bottom: 20px;
     }
@@ -126,8 +163,73 @@ import { FormsModule } from '@angular/forms';
       border-color: #d4af6a;
     }
 
-    textarea.form-control {
-      resize: vertical;
+    .editor-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .editor-btn {
+      padding: 6px 12px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .editor-btn:hover {
+      background: #e9e9e9;
+      border-color: #999;
+    }
+
+    .text-editor {
+      min-height: 150px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 1rem;
+      line-height: 1.6;
+      overflow-y: auto;
+    }
+
+    .text-editor:focus {
+      outline: none;
+      border-color: #d4af6a;
+    }
+
+    .text-editor ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .text-editor li {
+      margin: 5px 0;
+    }
+
+    .image-preview {
+      margin-top: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 300px;
+    }
+
+    .image-preview img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
     }
 
     .btn-primary {
@@ -139,6 +241,27 @@ import { FormsModule } from '@angular/forms';
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 175, 106, 0.3);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: #fff;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
     }
 
     .workshops-list {
@@ -148,13 +271,27 @@ import { FormsModule } from '@angular/forms';
     }
 
     .workshop-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      grid-template-columns: 200px 1fr auto;
+      gap: 20px;
+      align-items: start;
       padding: 20px;
       background: #f9f9f9;
       border-radius: 8px;
       border: 1px solid #eee;
+    }
+
+    .workshop-image {
+      width: 200px;
+      height: 150px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .workshop-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .workshop-info h3 {
@@ -162,14 +299,27 @@ import { FormsModule } from '@angular/forms';
       color: #333;
     }
 
-    .workshop-meta, .workshop-date {
+    .workshop-instructor {
       margin: 4px 0;
       color: #666;
       font-size: 0.9rem;
     }
 
+    .workshop-description {
+      margin-top: 12px;
+      color: #555;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .workshop-description ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+
     .workshop-actions {
       display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
@@ -179,6 +329,7 @@ import { FormsModule } from '@angular/forms';
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .btn-edit {
@@ -186,49 +337,141 @@ import { FormsModule } from '@angular/forms';
       color: #fff;
     }
 
+    .btn-edit:hover {
+      background: #45a049;
+    }
+
     .btn-delete {
       background: #f44336;
       color: #fff;
     }
+
+    .btn-delete:hover {
+      background: #da190b;
+    }
+
+    @media (max-width: 768px) {
+      .workshop-item {
+        grid-template-columns: 1fr;
+      }
+
+      .workshop-image {
+        width: 100%;
+      }
+
+      .workshop-actions {
+        flex-direction: row;
+      }
+    }
   `]
 })
 export class WorkshopsComponent {
-  newWorkshop = {
+  @ViewChild('descriptionEditor') descriptionEditor!: ElementRef;
+
+  editMode = false;
+  selectedImagePreview: string | null = null;
+  selectedImageData: string | null = null;
+
+  currentWorkshop: Workshop = {
+    id: 0,
     title: '',
     instructor: '',
-    duration: '',
-    date: '',
-    fee: '',
-    description: ''
+    description: '',
+    image: ''
   };
 
-  workshops = [
+  workshops: Workshop[] = [
     { 
       id: 1, 
       title: 'Advanced Makeup Techniques', 
       instructor: 'Priya Sharma',
-      duration: '3 days',
-      date: '2024-04-10',
-      fee: '₹15,000'
+      description: 'Learn advanced makeup techniques from industry experts.',
+      image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=400&fit=crop'
     }
   ];
 
-  addWorkshop() {
-    console.log('Adding workshop:', this.newWorkshop);
-    alert('Workshop added successfully!');
-    this.newWorkshop = {
-      title: '',
-      instructor: '',
-      duration: '',
-      date: '',
-      fee: '',
-      description: ''
-    };
+  onImageSelected(event: any) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = (e: any) => {
+        this.selectedImagePreview = e.target.result;
+        this.selectedImageData = e.target.result;
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  }
+
+  formatText(command: string) {
+    document.execCommand(command, false);
+    this.descriptionEditor.nativeElement.focus();
+  }
+
+  onEditorInput(event: any) {
+    this.currentWorkshop.description = event.target.innerHTML;
+  }
+
+  saveWorkshop() {
+    if (!this.currentWorkshop.title || !this.currentWorkshop.instructor || !this.currentWorkshop.description) {
+      alert('Please fill in all required fields!');
+      return;
+    }
+
+    if (this.selectedImageData) {
+      this.currentWorkshop.image = this.selectedImageData;
+    }
+
+    if (this.editMode) {
+      const index = this.workshops.findIndex(w => w.id === this.currentWorkshop.id);
+      if (index !== -1) {
+        this.workshops[index] = { ...this.currentWorkshop };
+      }
+      alert('Workshop updated successfully!');
+    } else {
+      const newWorkshop = {
+        ...this.currentWorkshop,
+        id: this.workshops.length > 0 ? Math.max(...this.workshops.map(w => w.id)) + 1 : 1
+      };
+      this.workshops.push(newWorkshop);
+      alert('Workshop added successfully!');
+    }
+
+    this.resetForm();
+  }
+
+  editWorkshop(workshop: Workshop) {
+    this.editMode = true;
+    this.currentWorkshop = { ...workshop };
+    this.selectedImagePreview = workshop.image;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   deleteWorkshop(id: number) {
     if (confirm('Are you sure you want to delete this workshop?')) {
       this.workshops = this.workshops.filter(w => w.id !== id);
+    }
+  }
+
+  cancelEdit() {
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.editMode = false;
+    this.currentWorkshop = {
+      id: 0,
+      title: '',
+      instructor: '',
+      description: '',
+      image: ''
+    };
+    this.selectedImagePreview = null;
+    this.selectedImageData = null;
+    if (this.descriptionEditor) {
+      this.descriptionEditor.nativeElement.innerHTML = '';
     }
   }
 }

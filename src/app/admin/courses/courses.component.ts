@@ -42,7 +42,8 @@ interface Course {
               <select 
                 [(ngModel)]="currentCourse.icon" 
                 name="icon" 
-                class="form-control">
+                class="form-control"
+                (change)="onIconChange()">
                 <option value="">Select an icon</option>
                 <option value="none">🚫 No Icon</option>
                 <option value="💄">💄 Makeup</option>
@@ -60,7 +61,23 @@ interface Course {
                 <option value="🌺">🌺 Hibiscus</option>
                 <option value="🦋">🦋 Butterfly</option>
                 <option value="👑">👑 Crown</option>
+                <option value="custom">✏️ Custom Icon</option>
               </select>
+              
+              @if (showCustomIconInput) {
+                <div style="margin-top: 10px;">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="customIconValue" 
+                    name="customIcon" 
+                    class="form-control"
+                    placeholder="Enter custom emoji or text (e.g., 🎭, 💇, etc.)"
+                    maxlength="3">
+                  <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 5px;">
+                    You can paste any emoji or enter up to 3 characters
+                  </small>
+                </div>
+              }
             </div>
           </div>
 
@@ -686,6 +703,8 @@ export class CoursesComponent {
   newJobProfile = '';
   editMode = false;
   flippedCourseId: number | null = null;
+  showCustomIconInput = false;
+  customIconValue = '';
 
   courses: Course[] = [
     { 
@@ -749,6 +768,13 @@ export class CoursesComponent {
     }
   }
 
+  onIconChange() {
+    this.showCustomIconInput = this.currentCourse.icon === 'custom';
+    if (!this.showCustomIconInput) {
+      this.customIconValue = '';
+    }
+  }
+
   formatText(command: string, value?: string) {
     document.execCommand(command, false, value);
   }
@@ -770,6 +796,11 @@ export class CoursesComponent {
   }
 
   saveCourse() {
+    // If custom icon is selected, use the custom value
+    if (this.currentCourse.icon === 'custom' && this.customIconValue.trim()) {
+      this.currentCourse.icon = this.customIconValue.trim();
+    }
+    
     if (this.editMode) {
       const index = this.courses.findIndex(c => c.id === this.currentCourse.id);
       if (index !== -1) {
@@ -787,12 +818,26 @@ export class CoursesComponent {
     
     this.currentCourse = this.getEmptyCourse();
     this.editMode = false;
+    this.showCustomIconInput = false;
+    this.customIconValue = '';
   }
 
   editCourse(course: Course) {
     this.currentCourse = { ...course, jobProfiles: [...course.jobProfiles] };
     this.editMode = true;
     this.flippedCourseId = null;
+    
+    // Check if icon is a custom one (not in predefined list)
+    const predefinedIcons = ['', 'none', '💄', '✂️', '✨', '💅', '🌸', '💆', '🎨', '👄', '💋', '🌹', '⭐', '💎', '🌺', '🦋', '👑'];
+    if (course.icon && !predefinedIcons.includes(course.icon)) {
+      this.customIconValue = course.icon;
+      this.currentCourse.icon = 'custom';
+      this.showCustomIconInput = true;
+    } else {
+      this.showCustomIconInput = false;
+      this.customIconValue = '';
+    }
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -806,6 +851,8 @@ export class CoursesComponent {
   cancelEdit() {
     this.currentCourse = this.getEmptyCourse();
     this.editMode = false;
+    this.showCustomIconInput = false;
+    this.customIconValue = '';
   }
 
   flipCard(courseId: number) {
