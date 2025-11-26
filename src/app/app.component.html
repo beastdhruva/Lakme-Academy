@@ -1,61 +1,103 @@
 <header class="header">
-  <div class="container">
-    <div class="header-content">
-      <div class="logo">
-        <span class="logo-text">LAKME</span>
-        <span class="logo-subtext">Academy</span>
-      </div>
-      <nav class="nav" [class.active]="mobileMenuOpen">
-        <ul>
-          <li><a href="#about" (click)="closeMobileMenu()">About</a></li>
-          <li><a href="#courses" (click)="closeMobileMenu()">Courses</a></li>
-          <li><a href="#gallery" (click)="closeMobileMenu()">Gallery</a></li>
-          <li><a href="#events" (click)="closeMobileMenu()">Events</a></li>
-          <li><a href="#testimonials" (click)="closeMobileMenu()">Testimonials</a></li>
-          <li><a href="#contact" (click)="closeMobileMenu()">Contact</a></li>
-        </ul>
-      </nav>
-      <button class="mobile-menu-btn" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+  <div class="header-content">
+    <div class="logo">
+      <span class="logo-text">LAKME ACADEMY</span>
+      <span class="logo-subtext">Beautify the Future</span>
     </div>
+    <nav class="nav" [class.active]="mobileMenuOpen">
+      <ul>
+        <li><a href="#about" (click)="closeMobileMenu()">About Us</a></li>
+        <li><a href="#courses" (click)="closeMobileMenu()">Courses</a></li>
+        <li><a href="#gallery" (click)="closeMobileMenu()">Gallery</a></li>
+        <li><a href="#highlights" (click)="closeMobileMenu()">Highlights</a></li>
+        <li><a href="#events" (click)="closeMobileMenu()">Events</a></li>
+        <li><a href="#workshops" (click)="closeMobileMenu()">Workshops</a></li>
+        <li><a href="#awards" (click)="closeMobileMenu()">Awards</a></li>
+        <li><a href="#testimonials" (click)="closeMobileMenu()">Testimonials</a></li>
+        <li><a href="#contact" (click)="closeMobileMenu()">Job placement</a></li>
+      </ul>
+    </nav>
+    <button class="enquire-btn">Enquire Now</button>
+    <button class="mobile-menu-btn" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </header>
 
-<section class="hero">
-  <div class="hero-slider">
-    <div class="slide active">
-      <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&h=800&fit=crop" alt="Beauty Training">
-      <div class="slide-overlay"></div>
+<section class="video-section">
+  <div class="video-container">
+    <div class="video-wrapper" #videoWrapper>
+      <iframe 
+        #videoFrame
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ" 
+        title="Lakme Academy Mumbai Vashi" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+      <div class="video-controls">
+        <button class="video-control-btn pip-btn" (click)="togglePictureInPicture()" title="Picture in Picture">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <rect x="9" y="9" width="10" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button class="video-control-btn fullscreen-btn" (click)="toggleFullscreen()" title="Fullscreen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-  <div class="hero-content">
-    <div class="container">
-      <div class="hero-grid">
-        <div class="hero-text">
-          <h1>Mumbai - Vashi</h1>
-          <p class="location">Sector 17, Vashi, Navi Mumbai, Maharashtra 400703</p>
-          <p class="tagline">Transform Your Passion Into a Successful Career in Beauty & Wellness</p>
-        </div>
-        <div class="counseling-form">
-          <div class="form-header">
-            <h3>Free Career Counseling & Enquire Now</h3>
+</section>
+
+<section class="location-section">
+  <div class="location-container">
+    <div class="location-badge">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span>MUMBAI - VASHI</span>
+    </div>
+    <p class="location-address">2nd Floor Haware Infotech Park Opp Vashi Railway Station Next To Inorbit Mall Sector 30a, Vashi Navi Mumbai, Inorbit Mallmumbai, Navi Mumbai, Maharashtra, India - 400705.</p>
+    <p class="contact-info">+/- 9873085334 <span class="sms-badge">SMS ME</span></p>
+  </div>
+</section>
+
+<section class="hero-form-section">
+  <div class="form-container">
+    <div class="form-grid">
+      <div class="form-left">
+        <div class="form-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=600&fit=crop" alt="Beauty Model">
+          <div class="image-banner">
+            <h3>70+ YEARS OF BEAUTY LEADERSHIP.</h3>
+            <h3>25+ YEARS OF SETTING TRENDS.</h3>
+            <p>Lakme Academy powered by Aptech brings its students the unique opportunity to experience the backstage at Lakme Fashion Week.</p>
           </div>
-          <form>
-            <input type="text" placeholder="Your Name" required>
+        </div>
+      </div>
+      <div class="form-right">
+        <div class="counseling-form-wrapper">
+          <h2 class="form-title">Free Career Counselling Enquire Now!</h2>
+          <form class="enquiry-form">
+            <input type="text" placeholder="Full Name" required>
+            <input type="tel" placeholder="Enter Mobile Number" required>
             <input type="email" placeholder="Email Address" required>
-            <input type="tel" placeholder="Phone Number" required>
-            <select>
-              <option value="">Select Course</option>
+            <select required>
+              <option value="">Select Interested Course</option>
               <option>Hair Styling</option>
               <option>Makeup Artistry</option>
               <option>Skin Care</option>
               <option>Nail Art</option>
               <option>Complete Beauty Course</option>
             </select>
-            <button type="submit" class="btn-primary">Submit Enquiry</button>
+            <p class="privacy-text">By clicking on Submit, I allow Lakmé Academy Powered By Aptech to contact me, and use & share my personal data as per the <a href="#" class="privacy-link">Privacy Policy</a>.</p>
+            <button type="submit" class="submit-btn">SUBMIT</button>
           </form>
         </div>
       </div>
@@ -76,12 +118,25 @@
   <div class="container">
     <h2 class="section-title">About Us</h2>
     <div class="about-grid">
-      <div class="about-image">
-        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&h=400&fit=crop" alt="About Lakme Academy">
+      <div class="about-slider">
+        <div class="slider-container">
+          @for (image of aboutImages; track image; let i = $index) {
+            <div class="slider-item" [class.active]="currentAboutSlide === i">
+              <img [src]="image" alt="Lakme Academy">
+            </div>
+          }
+        </div>
+        <button class="slider-arrow prev" (click)="changeAboutSlide(-1)">‹</button>
+        <button class="slider-arrow next" (click)="changeAboutSlide(1)">›</button>
+        <div class="slider-dots">
+          @for (image of aboutImages; track image; let i = $index) {
+            <span class="dot" [class.active]="currentAboutSlide === i" (click)="goToAboutSlide(i)"></span>
+          }
+        </div>
       </div>
       <div class="about-text">
-        <p>Lakme Academy powered by Aptech is India's premier beauty and wellness training institute. With over 30 years of experience in the beauty industry, we have trained thousands of students who are now successful professionals across the globe.</p>
-        <p>Our Mumbai - Vashi centre offers world-class infrastructure, experienced faculty, and industry-relevant curriculum designed to give you a competitive edge in the beauty and wellness industry.</p>
+        <p>Lakmé Academy Powered By Aptech is a partnership between two industry stalwarts - Lakmé & Aptech with decades of experience in beauty and training. With job-oriented training in all aspects of beauty & wellness including Makeup, Hair, Skin, Nails & Cosmetology, Lakmé Academy empowers you for careers in the beauty industry.</p>
+        <p>With Lakmé Academy Mumbai - Vashi, you get hands-on training with premium products and learn the most in-demand trends and techniques followed by top beauty professionals.</p>
         <ul class="about-features">
           <li>Industry-recognized certification</li>
           <li>Hands-on practical training</li>
@@ -117,10 +172,25 @@
   </div>
 </section>
 
+<section class="enquire-banner">
+  <div class="container">
+    <div class="enquire-banner-content">
+      <div class="enquire-banner-left">
+        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=400&fit=crop" alt="Beauty Professional">
+      </div>
+      <div class="enquire-banner-right">
+        <h3>Interested in making a career in Beauty & Wellness Industry?</h3>
+        <p>Our Team will soon get in touch with you.</p>
+        <button class="enquire-banner-btn">Enquire Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="gallery" class="gallery">
   <div class="container">
     <h2 class="section-title">Gallery</h2>
-    <p class="section-subtitle">Glimpses of our training sessions and student work</p>
+    <p class="section-subtitle">Step into our world of creativity and excellence—explore the gallery of Lakmé Academy Mumbai - Vashi, showcasing stunning transformations, backstage moments, and industry-defining artistry.</p>
     <div class="gallery-grid">
       @for (image of galleryImages; track image) {
         <div class="gallery-item">

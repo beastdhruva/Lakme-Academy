@@ -1,16 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'Lakme Academy Mumbai - Vashi';
   mobileMenuOpen = false;
+  currentAboutSlide = 0;
+
+  @ViewChild('videoWrapper') videoWrapper!: ElementRef;
+  @ViewChild('videoFrame') videoFrame!: ElementRef;
 
   toggleMobileMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -20,12 +25,45 @@ export class AppComponent {
     this.mobileMenuOpen = false;
   }
 
+  togglePictureInPicture() {
+    const iframe = this.videoFrame.nativeElement;
+    // Note: YouTube iframes don't support native PiP, but we can open in new window
+    const videoUrl = iframe.src.replace('embed/', 'watch?v=').split('?')[0];
+    window.open(videoUrl, 'PiP', 'width=640,height=360');
+  }
+
+  toggleFullscreen() {
+    const wrapper = this.videoWrapper.nativeElement;
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().catch((err: Error) => {
+        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  aboutImages = [
+    'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=600&h=500&fit=crop'
+  ];
+
   courses = [
     { name: 'Hair Styling', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop', description: 'Master the art of hair styling' },
-    { name: 'Makeup Artistry', image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop', description: 'Professional makeup techniques' },
+    { name: 'Makeup Artistry', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=300&fit=crop', description: 'Professional makeup techniques' },
     { name: 'Skin Care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop', description: 'Advanced skincare treatments' },
     { name: 'Nail Art', image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop', description: 'Creative nail art designs' }
   ];
+
+  changeAboutSlide(direction: number) {
+    this.currentAboutSlide = (this.currentAboutSlide + direction + this.aboutImages.length) % this.aboutImages.length;
+  }
+
+  goToAboutSlide(index: number) {
+    this.currentAboutSlide = index;
+  }
 
   galleryImages = [
     'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=300&fit=crop',
