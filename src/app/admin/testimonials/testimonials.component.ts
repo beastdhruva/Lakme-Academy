@@ -86,14 +86,25 @@ interface Testimonial {
         <h2>Testimonials List</h2>
         <div class="testimonials-grid">
           @for (testimonial of testimonials; track testimonial.id) {
-            <div class="testimonial-item">
-              <div class="testimonial-thumbnail">
+            <div class="testimonial-card">
+              <div class="video-thumbnail">
                 <img [src]="testimonial.thumbnail" [alt]="testimonial.title">
-                <div class="play-icon">▶</div>
+                <div class="channel-badge">
+                  <span class="channel-icon">⚡</span>
+                  <span class="channel-name">{{ testimonial.channel }}</span>
+                  <button class="subscribe-btn">Subscribe</button>
+                </div>
+                <div class="play-overlay">
+                  <div class="youtube-play-button">
+                    <svg width="68" height="48" viewBox="0 0 68 48">
+                      <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#FF0000"/>
+                      <path d="M 45,24 27,14 27,34" fill="#FFFFFF"/>
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <div class="testimonial-content">
+              <div class="video-info">
                 <h3>{{ testimonial.title }}</h3>
-                <p class="channel">{{ testimonial.channel }}</p>
                 <p class="video-url">{{ testimonial.videoUrl }}</p>
               </div>
               <div class="testimonial-actions">
@@ -108,12 +119,14 @@ interface Testimonial {
   `,
     styles: [`
     .admin-page {
-      max-width: 1200px;
+      max-width: 1400px;
+      padding: 20px;
     }
 
     h1 {
       color: #1a1a1a;
       margin-bottom: 30px;
+      font-size: 2rem;
     }
 
     .form-card {
@@ -127,6 +140,7 @@ interface Testimonial {
       margin-top: 0;
       color: #333;
       margin-bottom: 24px;
+      font-size: 1.5rem;
     }
 
     .form-group {
@@ -147,6 +161,7 @@ interface Testimonial {
       border-radius: 8px;
       font-size: 1rem;
       font-family: inherit;
+      box-sizing: border-box;
     }
 
     .form-control:focus {
@@ -160,9 +175,9 @@ interface Testimonial {
     }
 
     .preview-img {
-      max-width: 300px;
-      max-height: 200px;
-      border-radius: 8px;
+      max-width: 400px;
+      max-height: 250px;
+      border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
@@ -203,60 +218,108 @@ interface Testimonial {
 
     .testimonials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
     }
 
-    .testimonial-item {
+    .testimonial-card {
       background: #f9f9f9;
-      border-radius: 8px;
+      border-radius: 16px;
+      overflow: hidden;
       border: 1px solid #eee;
-      overflow: hidden;
+      transition: transform 0.3s;
     }
 
-    .testimonial-thumbnail {
-      width: 100%;
-      height: 200px;
-      overflow: hidden;
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .video-thumbnail {
       position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+      overflow: hidden;
     }
 
-    .testimonial-thumbnail img {
+    .video-thumbnail img {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .play-icon {
+    .channel-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .channel-icon {
+      font-size: 14px;
+    }
+
+    .channel-name {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .subscribe-btn {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    .subscribe-btn:hover {
+      background: #e0e0e0;
+    }
+
+    .play-overlay {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 0, 0, 0.9);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
+      z-index: 1;
+      cursor: pointer;
+      transition: transform 0.3s;
     }
 
-    .testimonial-content {
-      padding: 20px;
+    .play-overlay:hover {
+      transform: translate(-50%, -50%) scale(1.1);
     }
 
-    .testimonial-content h3 {
+    .youtube-play-button {
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+
+    .video-info {
+      padding: 16px;
+    }
+
+    .video-info h3 {
       margin: 0 0 8px 0;
       color: #333;
       font-size: 1rem;
-    }
-
-    .channel {
-      color: #666;
-      font-size: 0.9rem;
-      margin: 0 0 8px 0;
+      font-weight: 600;
+      line-height: 1.4;
     }
 
     .video-url {
@@ -269,17 +332,18 @@ interface Testimonial {
     .testimonial-actions {
       display: flex;
       gap: 12px;
-      padding: 0 20px 20px;
+      padding: 0 16px 16px;
     }
 
     .btn-edit, .btn-delete {
       flex: 1;
-      padding: 8px 16px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.9rem;
+      transition: all 0.3s;
     }
 
     .btn-edit {

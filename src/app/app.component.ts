@@ -1,6 +1,7 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
+import { SliderService, Slide } from './services/slider.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,16 @@ import { Router, RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
   title = 'Lakme Academy Mumbai - Vashi';
   mobileMenuOpen = false;
   currentAboutSlide = 0;
+
+  // Slider data
+  slides: Slide[] = [];
+  activeSlides: Slide[] = [];
+  currentSlideIndex = 0;
+  private sliderInterval: any;
 
   @ViewChild('videoWrapper') videoWrapper!: ElementRef;
   @ViewChild('videoFrame') videoFrame!: ElementRef;
@@ -38,7 +45,53 @@ export class AppComponent implements AfterViewInit {
   private startXTestimonials = 0;
   private scrollLeftTestimonials = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sliderService: SliderService) { }
+
+  ngOnInit(): void {
+    this.sliderService.getAllSlides().subscribe((data: Slide[]) => {
+      this.slides = data;
+      this.activeSlides = data.filter(slide => slide.is_active);
+      if (this.activeSlides.length > 0) {
+        this.startSliderRotation();
+      }
+    });
+  }
+
+  startSliderRotation(): void {
+    // Change slide every 5 seconds
+    this.sliderInterval = setInterval(() => {
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % this.activeSlides.length;
+    }, 8085);
+  }
+
+  ngOnDestroy(): void {
+    if (this.sliderInterval) {
+      clearInterval(this.sliderInterval);
+    }
+  }
+
+  getSlideUrl(url: string): string {
+    if (url.startsWith('/uploads')) {
+      return `http://localhost:3000${url}`;
+    }
+    return url;
+  }
+
+  getSafeVideoUrl(url: string): any {
+    // Convert YouTube/Vimeo URLs to embed format
+    let embedUrl = url;
+    if (url.includes('youtube.com/watch')) {
+      const videoId = url.split('v=')[1]?.split('&')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1`;
+    } else if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1`;
+    } else if (url.includes('vimeo.com')) {
+      const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+      embedUrl = `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1`;
+    }
+    return embedUrl;
+  }
 
   ngAfterViewInit() {
     // Lifecycle hook implementation
@@ -79,10 +132,10 @@ export class AppComponent implements AfterViewInit {
   expandedCourse: number | null = null;
 
   courses = [
-    { 
-      name: 'Makeup', 
+    {
+      name: 'Makeup',
       icon: '💄',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=400&fit=crop', 
+      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=400&fit=crop',
       description: 'Professional makeup techniques',
       jobProfiles: [
         'Makeup Artist',
@@ -95,10 +148,10 @@ export class AppComponent implements AfterViewInit {
         'Backstage & Runway Expert Makeup Artist'
       ]
     },
-    { 
-      name: 'Hair', 
+    {
+      name: 'Hair',
       icon: '✂️',
-      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop', 
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop',
       description: 'Master the art of hair styling',
       jobProfiles: [
         'Hair Stylist',
@@ -111,10 +164,10 @@ export class AppComponent implements AfterViewInit {
         'Celebrity Hair Stylist'
       ]
     },
-    { 
-      name: 'Skin', 
+    {
+      name: 'Skin',
       icon: '✨',
-      image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop', 
+      image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop',
       description: 'Advanced skincare treatments',
       jobProfiles: [
         'Skin Care Specialist',
@@ -202,30 +255,30 @@ export class AppComponent implements AfterViewInit {
   ];
 
   events = [
-    { 
-      title: 'The Showcase', 
-      image: 'https://images.unsplash.com/photo-1503236823255-94609f598e71?w=600&h=400&fit=crop', 
-      description: 'The Showcase by Lakmé Academy is an annual extravaganza that celebrates the artistry, talent, and innovation of aspiring beauty professionals. It provides students with a platform to display their expertise in makeup, hair, and styling through theme-based creations.' 
+    {
+      title: 'The Showcase',
+      image: 'https://images.unsplash.com/photo-1503236823255-94609f598e71?w=600&h=400&fit=crop',
+      description: 'The Showcase by Lakmé Academy is an annual extravaganza that celebrates the artistry, talent, and innovation of aspiring beauty professionals. It provides students with a platform to display their expertise in makeup, hair, and styling through theme-based creations.'
     },
-    { 
-      title: 'Backstage Drama', 
-      image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=400&fit=crop', 
-      description: 'Behind the scenes of fashion shows - where our students get real-world experience working with professional models and photographers in high-pressure environments.' 
+    {
+      title: 'Backstage Drama',
+      image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=400&fit=crop',
+      description: 'Behind the scenes of fashion shows - where our students get real-world experience working with professional models and photographers in high-pressure environments.'
     },
-    { 
-      title: 'Fashion Week', 
-      image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f1c05?w=600&h=400&fit=crop', 
-      description: 'Exclusive fashion week coverage - our students work backstage at major fashion events, gaining invaluable industry exposure and networking opportunities.' 
+    {
+      title: 'Fashion Week',
+      image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f1c05?w=600&h=400&fit=crop',
+      description: 'Exclusive fashion week coverage - our students work backstage at major fashion events, gaining invaluable industry exposure and networking opportunities.'
     },
-    { 
-      title: 'Beauty Masterclass', 
-      image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=400&fit=crop', 
-      description: 'Learn from industry experts in our exclusive masterclass sessions covering the latest trends, techniques, and innovations in the beauty industry.' 
+    {
+      title: 'Beauty Masterclass',
+      image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=400&fit=crop',
+      description: 'Learn from industry experts in our exclusive masterclass sessions covering the latest trends, techniques, and innovations in the beauty industry.'
     },
-    { 
-      title: 'Student Exhibition', 
-      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop', 
-      description: 'Annual student exhibition showcasing creative work, innovative techniques, and artistic expression from our talented students across all courses.' 
+    {
+      title: 'Student Exhibition',
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop',
+      description: 'Annual student exhibition showcasing creative work, innovative techniques, and artistic expression from our talented students across all courses.'
     }
   ];
 

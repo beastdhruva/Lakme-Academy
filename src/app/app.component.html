@@ -1,3 +1,39 @@
+<!-- Dynamic Slider Section -->
+@if (activeSlides.length > 0) {
+  <section class="hero-slider">
+    <div class="slider-container">
+      @for (slide of activeSlides; track slide.id; let i = $index) {
+        <div class="slider-item" [class.active]="currentSlideIndex === i">
+          @if (slide.video_file) {
+            <video [src]="getSlideUrl(slide.video_file)" autoplay loop muted playsinline>
+              Your browser does not support the video tag.
+            </video>
+          } @else if (slide.video_url) {
+            <iframe
+              [src]="getSafeVideoUrl(slide.video_url)"
+              frameborder="0"
+              allow="autoplay; fullscreen"
+              allowfullscreen>
+            </iframe>
+          } @else if (slide.image_url) {
+            <img [src]="getSlideUrl(slide.image_url)" [alt]="slide.title">
+          }
+          @if (slide.title || slide.description) {
+            <div class="slider-content">
+              @if (slide.title) {
+                <h1>{{ slide.title }}</h1>
+              }
+              @if (slide.description) {
+                <p>{{ slide.description }}</p>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+}
+
 <router-outlet></router-outlet>
 
 <ng-container *ngIf="!isAdminRoute()">
@@ -34,12 +70,12 @@
 <section class="video-section">
   <div class="video-container">
     <div class="video-wrapper" #videoWrapper>
-      <iframe 
+      <iframe
         #videoFrame
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ" 
-        title="Lakme Academy Mumbai Vashi" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+        title="Lakme Academy Mumbai Vashi"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen>
       </iframe>
       <div class="video-controls">
@@ -345,7 +381,7 @@
       <h2 class="section-title">Awards</h2>
       <p class="section-subtitle">Celebrating excellence and achievement—discover the awards that recognize our students' talent and dedication.</p>
     </div>
-    
+
     <div class="awards-slider-wrapper">
       <button class="awards-nav-btn prev" (click)="scrollAwards('prev')">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

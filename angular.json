@@ -62,8 +62,14 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "host": "0.0.0.0",
-            "port": 5000,
-            "allowedHosts": ["."]
+            "port": 8085,
+            "allowedHosts": [
+              "all"
+            ],
+            "disableHostCheck": true,
+            "liveReload": false,
+            "hmr": false,
+            "poll": 2000
           },
           "configurations": {
             "production": {

@@ -40,7 +40,9 @@ interface Placement {
               class="form-control">
             @if (selectedImagePreview) {
               <div class="file-preview">
-                <img [src]="selectedImagePreview" alt="Student preview" class="preview-img">
+                <div class="preview-image-wrapper">
+                  <img [src]="selectedImagePreview" alt="Student preview" class="preview-img">
+                </div>
               </div>
             }
           </div>
@@ -62,11 +64,13 @@ interface Placement {
         <h2>Placements List</h2>
         <div class="placements-grid">
           @for (placement of placements; track placement.id) {
-            <div class="placement-item">
-              <div class="placement-image">
-                <img [src]="placement.image" [alt]="placement.name">
+            <div class="placement-card">
+              <div class="placement-image-wrapper">
+                <div class="placement-image">
+                  <img [src]="placement.image" [alt]="placement.name">
+                </div>
               </div>
-              <h3>{{ placement.name }}</h3>
+              <h3 class="placement-name">{{ placement.name }}</h3>
               <div class="placement-actions">
                 <button class="btn-edit" (click)="editPlacement(placement)">Edit</button>
                 <button class="btn-delete" (click)="deletePlacement(placement.id)">Delete</button>
@@ -80,11 +84,13 @@ interface Placement {
     styles: [`
     .admin-page {
       max-width: 1200px;
+      padding: 20px;
     }
 
     h1 {
       color: #1a1a1a;
       margin-bottom: 30px;
+      font-size: 2rem;
     }
 
     .form-card {
@@ -98,6 +104,7 @@ interface Placement {
       margin-top: 0;
       color: #333;
       margin-bottom: 24px;
+      font-size: 1.5rem;
     }
 
     .form-group {
@@ -118,6 +125,7 @@ interface Placement {
       border-radius: 8px;
       font-size: 1rem;
       font-family: inherit;
+      box-sizing: border-box;
     }
 
     .form-control:focus {
@@ -126,18 +134,24 @@ interface Placement {
     }
 
     .file-preview {
-      margin-top: 12px;
+      margin-top: 20px;
       text-align: center;
     }
 
-    .preview-img {
-      max-width: 220px;
-      max-height: 220px;
+    .preview-image-wrapper {
+      display: inline-block;
+      padding: 10px;
+      background: linear-gradient(135deg, #d4af6a 0%, #c9a85c 50%, #e8d5a3 100%);
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border: 8px solid transparent;
-      background: linear-gradient(#fff, #fff) padding-box,
-                  linear-gradient(135deg, #d4af6a 0%, #c9a85c 50%, #e8d5a3 100%) border-box;
+    }
+
+    .preview-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 8px solid #fff;
     }
 
     .form-actions {
@@ -177,59 +191,68 @@ interface Placement {
 
     .placements-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 40px;
+      margin-top: 30px;
     }
 
-    .placement-item {
-      background: #f9f9f9;
-      border-radius: 12px;
-      padding: 20px;
+    .placement-card {
       text-align: center;
-      border: 1px solid #eee;
       transition: transform 0.3s;
     }
 
-    .placement-item:hover {
-      transform: translateY(-5px);
+    .placement-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .placement-image-wrapper {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
     }
 
     .placement-image {
-      width: 180px;
-      height: 180px;
+      width: 220px;
+      height: 220px;
+      padding: 10px;
+      background: linear-gradient(135deg, #d4af6a 0%, #c9a85c 50%, #e8d5a3 100%);
       border-radius: 50%;
-      overflow: hidden;
-      margin: 0 auto 20px;
-      border: 8px solid transparent;
-      background: linear-gradient(#fff, #fff) padding-box,
-                  linear-gradient(135deg, #d4af6a 0%, #c9a85c 50%, #e8d5a3 100%) border-box;
+      display: inline-block;
     }
 
     .placement-image img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
       object-fit: cover;
+      border: 8px solid #fff;
+      display: block;
     }
 
-    .placement-item h3 {
+    .placement-name {
       margin: 0 0 20px 0;
-      color: #333;
-      font-size: 1.1rem;
+      color: #1a1a1a;
+      font-size: 1.25rem;
+      font-weight: 600;
     }
 
     .placement-actions {
       display: flex;
       gap: 12px;
+      justify-content: center;
+      max-width: 250px;
+      margin: 0 auto;
     }
 
     .btn-edit, .btn-delete {
       flex: 1;
-      padding: 8px 16px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.9rem;
+      transition: all 0.3s;
     }
 
     .btn-edit {
@@ -239,6 +262,7 @@ interface Placement {
 
     .btn-edit:hover {
       background: #45a049;
+      transform: translateY(-2px);
     }
 
     .btn-delete {
@@ -248,6 +272,7 @@ interface Placement {
 
     .btn-delete:hover {
       background: #da190b;
+      transform: translateY(-2px);
     }
   `]
 })

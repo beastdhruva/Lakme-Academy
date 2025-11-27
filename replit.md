@@ -40,11 +40,11 @@ src/
 
 ## Running the Application
 ```bash
-npx ng serve --host 0.0.0.0 --port 5000 --disable-host-check
+npx ng serve --host 0.0.0.0 --port 8085 --disable-host-check
 ```
 
 ## Configuration
-- Port: 5000
+- Port: 8085
 - Host: 0.0.0.0 (accessible from all interfaces)
 - Angular dev server configured in angular.json
 
